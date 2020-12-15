@@ -1,0 +1,38 @@
+version: '3.7'
+
+services:
+  go_container:
+    image: golang:1.15.2-alpine3.12
+    working_dir: /opt/service
+    container_name: go_container
+    environment:
+      - HOME_DIR=/opt/service
+    volumes:
+      - .:/opt/service/
+      - .go:/go
+    networks:
+      backend:
+        ipv4_address: 172.19.0.2
+    extra_hosts:
+      - "redis.cache:172.19.0.3"
+    command: "sh -c 'while true ; do sleep 3 ; done'"
+
+  redis_cache:
+    image: redis:6.0.6-alpine3.12
+    container_name: redis_cache
+    ports:
+      - "6379:6379"
+    volumes:
+      - .cache:/var/lib/redis
+    command: >
+      --requirepass password
+    networks:
+      backend:
+        ipv4_address: 172.19.0.3
+
+networks:
+  backend:
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.19.0.0/24 
