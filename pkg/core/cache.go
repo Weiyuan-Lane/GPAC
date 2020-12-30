@@ -37,6 +37,12 @@ func WithDefaultPageTTL(defaultPageTTL int) GPACOption {
 	}
 }
 
+func WithUniqueNamespace(uniqueNamespace string) GPACOption {
+	return func(p *PageAwareCache) {
+		p.uniqueNamespace = uniqueNamespace
+	}
+}
+
 func NewGPAC(options ...GPACOption) *PageAwareCache {
 	cache := &PageAwareCache{
 		cacheClient:    localmap.New(),

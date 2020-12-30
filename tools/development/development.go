@@ -19,6 +19,7 @@ func main() {
 		core.WithCacheClient(cacheClient),
 		core.WithDefaultItemTTL(10),
 		core.WithDefaultPageTTL(10),
+		core.WithUniqueNamespace("testingnamespace"),
 	)
 
 	var item TestStruct
@@ -28,6 +29,11 @@ func main() {
 		return &TestStruct{"stuff"}, nil
 	})
 	fmt.Println("Retrieved called item as:", item)
+	_ = gpacWrapperClient.Item(&item, "stuff", func(key string) (interface{}, error) {
+		fmt.Println("Called")
+		return &TestStruct{"stuff1"}, nil
+	})
+	fmt.Println("Retrieved called item (without calling direct but from cache) as:", item)
 	item.Kind = "ok changed"
 	fmt.Println("Edited directly without saving:", item)
 	fmt.Println("Waiting 10 seconds for TTL to lapse")
@@ -35,7 +41,7 @@ func main() {
 	fmt.Println("Retrieving item again")
 	_ = gpacWrapperClient.Item(&item, "stuff", func(key string) (interface{}, error) {
 		fmt.Println("Called")
-		return &TestStruct{"stuff"}, nil
+		return &TestStruct{"stuff2"}, nil
 	})
 	fmt.Println("Retrieved called item as:", item)
 }

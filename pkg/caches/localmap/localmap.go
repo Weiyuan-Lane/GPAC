@@ -1,6 +1,8 @@
 package localmap
 
-import "time"
+import (
+	"time"
+)
 
 type localMapEntry struct {
 	data        string
@@ -21,7 +23,7 @@ func (l *LocalMap) Get(key string) (*string, error) {
 	currTime := currTimeSeconds()
 
 	if val, ok := l.storage[key]; ok {
-		if currTime < val.expiredTime {
+		if currTime > val.expiredTime {
 			l.Delete(key)
 			return nil, nil
 		}
