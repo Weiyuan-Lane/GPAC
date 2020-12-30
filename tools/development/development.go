@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/go-redis/redis/v8"
 	"github.com/weiyuan-lane/gpac/pkg/caches/localmap"
+	"github.com/weiyuan-lane/gpac/pkg/caches/rediswrapper"
 	"github.com/weiyuan-lane/gpac/pkg/core"
 )
 
@@ -13,6 +15,30 @@ type TestStruct struct {
 }
 
 func main() {
+	testRedis()
+	// testLocalMap()
+}
+
+func testRedis() {
+	client := redis.NewClient(&redis.Options{
+		Addr:     "redis.cache:6379",
+		Password: "password",
+		DB:       0,
+	})
+
+	cacheClient := rediswrapper.New(client)
+
+	gpacWrapperClient := core.NewGPAC(
+		core.WithCacheClient(cacheClient),
+		core.WithDefaultItemTTL(10),
+		core.WithDefaultPageTTL(10),
+		core.WithUniqueNamespace("testingnamespace"),
+	)
+
+	testLogic(gpacWrapperClient)
+}
+
+func testLocalMap() {
 	cacheClient := localmap.New()
 
 	gpacWrapperClient := core.NewGPAC(
@@ -22,6 +48,10 @@ func main() {
 		core.WithUniqueNamespace("testingnamespace"),
 	)
 
+	testLogic(gpacWrapperClient)
+}
+
+func testLogic(gpacWrapperClient *core.PageAwareCache) {
 	var item TestStruct
 	fmt.Println("Retrieving item")
 	_ = gpacWrapperClient.Item(&item, "stuff", func(key string) (interface{}, error) {
