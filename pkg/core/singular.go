@@ -3,7 +3,6 @@ package core
 import (
 	"bytes"
 	"encoding/gob"
-	"reflect"
 )
 
 type RetrievalFunc func(key string) (interface{}, error)
@@ -44,38 +43,6 @@ func (p *PageAwareCache) Item(subject interface{}, key string, retrieveWith Retr
 
 		p.cacheClient.Set(itemCacheKey, buf.String(), p.defaultItemTTL)
 	}
-
-	return nil
-}
-
-func (p *PageAwareCache) isPointer(kind interface{}) bool {
-	return reflect.ValueOf(kind).Kind() == reflect.Ptr
-}
-
-func (p *PageAwareCache) isNil(kind interface{}) bool {
-	return reflect.ValueOf(kind).IsNil()
-}
-
-func (p *PageAwareCache) copyBetweenPointers(dest, src interface{}) error {
-	if src == nil {
-		// return error
-	}
-	if dest == nil {
-		// return error
-	}
-
-	srcVal := reflect.ValueOf(src)
-	destVal := reflect.ValueOf(dest)
-	if srcVal.Kind() != reflect.Ptr {
-		// return error
-	}
-	if destVal.Kind() != reflect.Ptr {
-		// return error
-	}
-
-	srcElem := srcVal.Elem()
-	destElem := destVal.Elem()
-	srcElem.Set(destElem)
 
 	return nil
 }

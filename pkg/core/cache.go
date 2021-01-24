@@ -1,8 +1,6 @@
 package core
 
 import (
-	"fmt"
-
 	"github.com/weiyuan-lane/gpac/pkg/caches"
 	"github.com/weiyuan-lane/gpac/pkg/caches/localmap"
 	"github.com/weiyuan-lane/gpac/pkg/constants"
@@ -55,16 +53,4 @@ func NewGPAC(options ...GPACOption) *PageAwareCache {
 	}
 
 	return cache
-}
-
-// Using the unique namespace and the item key, create a key unique
-// to this target resource
-func (p *PageAwareCache) createItemFullCacheKey(itemKey string) string {
-	return fmt.Sprintf(constants.ItemKeyTemplate, p.uniqueNamespace, itemKey)
-}
-
-// Using the unique namespace and the page key, create a key unique
-// to this target resource page
-func (p *PageAwareCache) createPageFullCacheKey(pageKey string) string {
-	return fmt.Sprintf(constants.PageKeyTemplate, p.uniqueNamespace, pageKey)
 }
