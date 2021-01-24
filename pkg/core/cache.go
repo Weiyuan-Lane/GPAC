@@ -6,8 +6,6 @@ import (
 	"github.com/weiyuan-lane/gpac/pkg/constants"
 )
 
-type KeyFromItemFunc func(item interface{}) string
-
 type PageAwareCache struct {
 	cacheClient     caches.CacheClient
 	uniqueNamespace string
