@@ -5,6 +5,7 @@ import (
 	"encoding/gob"
 	"fmt"
 	"reflect"
+	"strings"
 
 	"github.com/weiyuan-lane/gpac/pkg/constants"
 	customerrors "github.com/weiyuan-lane/gpac/pkg/errors"
@@ -12,8 +13,19 @@ import (
 
 // Using the unique namespace and the item key, create a key unique
 // to this target resource
-func (p *PageAwareCache) createItemFullCacheKey(itemKey string) string {
+func (p *PageAwareCache) createItemCacheKeyFromStrKey(itemKey string) string {
 	return fmt.Sprintf(constants.ItemKeyTemplate, p.uniqueNamespace, itemKey)
+}
+
+func (p *PageAwareCache) createItemCacheKeyFromSubKeys(subKeys ...ArgReference) string {
+	cacheSubKeys := make([]string, len(subKeys))
+	for i, subKey := range subKeys {
+		cacheSubKeys[i] = stringifyArgReference(subKey, constants.ArgDivider)
+	}
+
+	cacheKey := strings.Join(cacheSubKeys, constants.SubkeyDivider)
+
+	return cacheKey
 }
 
 // Using the unique namespace and the page key, create a key unique
