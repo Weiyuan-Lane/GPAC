@@ -19,5 +19,12 @@ var (
 	ErrSourceListValIsNotSlice      = errors.New("GPAC: source list value is not a slice")
 	ErrDestinationListValIsNotSlice = errors.New("GPAC: destination list value is not a slice")
 
+	ErrSourceMapValIsNil           = errors.New("GPAC: source map value is nil")
+	ErrDestinationMapValIsNil      = errors.New("GPAC: destination map value is nil")
+	ErrSourceMapValIsNotPtr        = errors.New("GPAC: source map value is not a pointer")
+	ErrDestinationMapValIsNotPtr   = errors.New("GPAC: destination map value is not a pointer")
+	ErrSourceMapValIsNotSlice      = errors.New("GPAC: source map value is not a slice")
+	ErrDestinationMapValIsNotSlice = errors.New("GPAC: destination map value is not a slice")
+
 	ErrDifferentLengthOfUnits = errors.New("GPAC: source and destination slices do not correspond to the same length")
 )
