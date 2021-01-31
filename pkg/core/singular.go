@@ -1,9 +1,6 @@
 package core
 
 import (
-	"bytes"
-	"encoding/gob"
-
 	customerrors "github.com/weiyuan-lane/gpac/pkg/errors"
 )
 
@@ -18,15 +15,14 @@ func (p *PageAwareCache) Item(subject interface{}, key string, retrieveWith Retr
 	}
 
 	if cachePayload != nil {
-		buf := bytes.NewBufferString(*cachePayload)
-		if err := gob.NewDecoder(buf).Decode(subject); err != nil {
+		if err := p.decodeStringIntoInterfacePtr(subject, *cachePayload); err != nil {
 			return err
 		}
 
 		return nil
 	}
 
-	payload, err := retrieveWith(itemCacheKey)
+	payload, err := retrieveWith(key)
 	if err != nil {
 		return err
 	}
@@ -39,13 +35,12 @@ func (p *PageAwareCache) Item(subject interface{}, key string, retrieveWith Retr
 		return err
 	}
 
-	buf := &bytes.Buffer{}
-	err = gob.NewEncoder(buf).Encode(payload)
+	cacheVal, err := p.encodeInterfacePtrIntoString(payload)
 	if err != nil {
 		return err
 	}
 
-	err = p.cacheClient.Set(itemCacheKey, buf.String(), p.defaultItemTTL)
+	err = p.cacheClient.Set(itemCacheKey, cacheVal, p.defaultItemTTL)
 	if err != nil {
 		return err
 	}
