@@ -52,6 +52,47 @@ func (p *PageAwareCache) copyBetweenPointers(src, dest interface{}) error {
 	return nil
 }
 
+func (p *PageAwareCache) copyBetweenPointerMaps(srcListPtr, destListPtr interface{}) error {
+	if srcListPtr == nil {
+		return customerrors.SourceListValIsNilErr
+	}
+	if destListPtr == nil {
+		return customerrors.DestinationListValIsNilErr
+	}
+
+	srcListVal := reflect.ValueOf(srcListPtr)
+	if srcListVal.Kind() != reflect.Ptr {
+		return customerrors.SourceListValIsNotPtrErr
+	}
+	destListVal := reflect.ValueOf(destListPtr)
+	if destListVal.Kind() != reflect.Ptr {
+		return customerrors.DestinationListValIsNotPtrErr
+	}
+
+	srcListElemVal := srcListVal.Elem()
+	if srcListElemVal.Kind() != reflect.Slice {
+		return customerrors.SourceListValIsNotSliceErr
+	}
+	destListElemVal := destListVal.Elem()
+	if destListElemVal.Kind() != reflect.Slice {
+		return customerrors.DestinationListValIsNotSliceErr
+	}
+
+	targetLength := destListElemVal.Len()
+	if srcListElemVal.Len() != targetLength {
+		return customerrors.DifferentLengthOfUnitsErr
+	}
+
+	for i := 0; i < targetLength; i++ {
+		srcIndexVal := srcListElemVal.Index(i)
+		destIndexVal := destListElemVal.Index(i)
+
+		destIndexVal.Set(srcIndexVal)
+	}
+
+	return nil
+}
+
 func (p *PageAwareCache) copyBetweenPointerLists(srcListPtr, destListPtr interface{}) error {
 	if srcListPtr == nil {
 		return customerrors.ErrSourceListValIsNil

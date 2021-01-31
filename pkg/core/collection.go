@@ -1,20 +1,20 @@
 package core
 
-// Return should either be map[interface]{} or []interface{}
-type MultipleRetrievalFunc func(keyList []string) (interface{}, error)
+type MultipleRetrievalFunc func(keyList []string) (map[string]interface{}, error)
 
-func (p *PageAwareCache) Items(subjectList interface{}, keyList []string, retrieveWith MultipleRetrievalFunc) error {
+func (p *PageAwareCache) Items(subjectMap interface{}, keyList []string, retrieveWith MultipleRetrievalFunc) error {
 	itemCacheKeyList := make([]string, len(keyList))
 	for i, key := range keyList {
 		itemCacheKeyList[i] = p.createItemFullCacheKey(key)
 	}
 
-	for _, cacheKey := range itemCacheKeyList {
-
-	}
-
-	cachePayload, err := p.cacheClient.Get(cacheKey)
+	cachePayloads, err := p.cacheClient.MultipleGet(itemCacheKeyList)
 	if err != nil {
 		return err
 	}
+
+	// For each cache item, find those that are not cached
+
+	// Cache the items that were retrieved
+	// return the rest
 }
