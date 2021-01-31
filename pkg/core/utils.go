@@ -14,24 +14,46 @@ import (
 // Using the unique namespace and the item key, create a key unique
 // to this target resource
 func (p *PageAwareCache) createItemCacheKeyFromStrKey(itemKey string) string {
-	return fmt.Sprintf(constants.ItemKeyTemplate, p.uniqueNamespace, itemKey)
+	return fmt.Sprintf(constants.SimpleItemKeyTemplate, p.uniqueNamespace, itemKey)
 }
 
 func (p *PageAwareCache) createItemCacheKeyFromSubKeys(subKeys ...ArgReference) string {
-	cacheSubKeys := make([]string, len(subKeys))
-	for i, subKey := range subKeys {
-		cacheSubKeys[i] = stringifyArgReference(subKey, constants.ArgDivider)
-	}
-
-	cacheKey := strings.Join(cacheSubKeys, constants.SubkeyDivider)
-
-	return cacheKey
+	return p.createCacheKeyFromSubKeysAndTemplate(
+		constants.ItemKeyTemplate,
+		subKeys...,
+	)
 }
 
 // Using the unique namespace and the page key, create a key unique
 // to this target resource page
-func (p *PageAwareCache) createPageFullCacheKey(pageKey string) string {
-	return fmt.Sprintf(constants.PageKeyTemplate, p.uniqueNamespace, pageKey)
+func (p *PageAwareCache) createPageCacheKeyFromStrKey(pageKey string) string {
+	return fmt.Sprintf(constants.SimplePageKeyTemplate, p.uniqueNamespace, pageKey)
+}
+
+func (p *PageAwareCache) createPageCacheKeyFromSubKeys(subKeys ...ArgReference) string {
+	return p.createCacheKeyFromSubKeysAndTemplate(
+		constants.PageKeyTemplate,
+		subKeys...,
+	)
+}
+
+func (p *PageAwareCache) createCacheKeyFromSubKeysAndTemplate(template string, subKeys ...ArgReference) string {
+	cacheSubKeys := make([]string, len(subKeys))
+	cacheSubNamespaces := make([]string, len(subKeys))
+	for i, subKey := range subKeys {
+		cacheSubKeys[i] = stringifyArgReference(subKey, constants.ArgDivider)
+		cacheSubNamespaces[i] = subKey.Key()
+	}
+
+	cacheKeyComponent := strings.Join(cacheSubKeys, constants.SubkeyDivider)
+	cacheNamespaceComponent := strings.Join(cacheSubNamespaces, constants.ArgDivider)
+
+	return fmt.Sprintf(
+		template,
+		p.uniqueNamespace,
+		cacheNamespaceComponent,
+		cacheKeyComponent,
+	)
 }
 
 func (p *PageAwareCache) isPointer(kind interface{}) bool {
