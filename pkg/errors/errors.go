@@ -5,19 +5,19 @@ import (
 )
 
 var (
-	ItemNotFoundErr = errors.New("GPAC: item was not found")
+	ErrItemNotFound = errors.New("GPAC: item was not found")
 
-	SourceValIsNilErr         = errors.New("GPAC: source value is nil")
-	DestinationValIsNilErr    = errors.New("GPAC: destination value is nil")
-	SourceValIsNotPtrErr      = errors.New("GPAC: source value is not a pointer")
-	DestinationValIsNotPtrErr = errors.New("GPAC: destination value is not a pointer")
+	ErrSourceValIsNil         = errors.New("GPAC: source value is nil")
+	ErrDestinationValIsNil    = errors.New("GPAC: destination value is nil")
+	ErrSourceValIsNotPtr      = errors.New("GPAC: source value is not a pointer")
+	ErrDestinationValIsNotPtr = errors.New("GPAC: destination value is not a pointer")
 
-	SourceListValIsNilErr           = errors.New("GPAC: source list value is nil")
-	DestinationListValIsNilErr      = errors.New("GPAC: destination list value is nil")
-	SourceListValIsNotPtrErr        = errors.New("GPAC: source list value is not a pointer")
-	DestinationListValIsNotPtrErr   = errors.New("GPAC: destination list value is not a pointer")
-	SourceListValIsNotSliceErr      = errors.New("GPAC: source list value is not a slice")
-	DestinationListValIsNotSliceErr = errors.New("GPAC: destination list value is not a slice")
+	ErrSourceListValIsNil           = errors.New("GPAC: source list value is nil")
+	ErrDestinationListValIsNil      = errors.New("GPAC: destination list value is nil")
+	ErrSourceListValIsNotPtr        = errors.New("GPAC: source list value is not a pointer")
+	ErrDestinationListValIsNotPtr   = errors.New("GPAC: destination list value is not a pointer")
+	ErrSourceListValIsNotSlice      = errors.New("GPAC: source list value is not a slice")
+	ErrDestinationListValIsNotSlice = errors.New("GPAC: destination list value is not a slice")
 
-	DifferentLengthOfUnitsErr = = errors.New("GPAC: source and destination slices do not correspond to the same length")
+	ErrDifferentLengthOfUnits = errors.New("GPAC: source and destination slices do not correspond to the same length")
 )

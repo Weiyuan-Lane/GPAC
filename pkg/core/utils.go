@@ -30,19 +30,19 @@ func (p *PageAwareCache) isNil(kind interface{}) bool {
 
 func (p *PageAwareCache) copyBetweenPointers(src, dest interface{}) error {
 	if src == nil {
-		return customerrors.SourceValIsNilErr
+		return customerrors.ErrSourceValIsNil
 	}
 	if dest == nil {
-		return customerrors.DestinationValIsNilErr
+		return customerrors.ErrDestinationValIsNil
 	}
 
 	srcVal := reflect.ValueOf(src)
 	if srcVal.Kind() != reflect.Ptr {
-		return customerrors.SourceValIsNotPtrErr
+		return customerrors.ErrSourceValIsNotPtr
 	}
 	destVal := reflect.ValueOf(dest)
 	if destVal.Kind() != reflect.Ptr {
-		return customerrors.DestinationValIsNotPtrErr
+		return customerrors.ErrDestinationValIsNotPtr
 	}
 
 	srcElem := srcVal.Elem()
@@ -54,33 +54,33 @@ func (p *PageAwareCache) copyBetweenPointers(src, dest interface{}) error {
 
 func (p *PageAwareCache) copyBetweenPointerLists(srcListPtr, destListPtr interface{}) error {
 	if srcListPtr == nil {
-		return customerrors.SourceListValIsNilErr
+		return customerrors.ErrSourceListValIsNil
 	}
 	if destListPtr == nil {
-		return customerrors.DestinationListValIsNilErr
+		return customerrors.ErrDestinationListValIsNil
 	}
 
 	srcListVal := reflect.ValueOf(srcListPtr)
 	if srcListVal.Kind() != reflect.Ptr {
-		return customerrors.SourceListValIsNotPtrErr
+		return customerrors.ErrSourceListValIsNotPtr
 	}
 	destListVal := reflect.ValueOf(destListPtr)
 	if destListVal.Kind() != reflect.Ptr {
-		return customerrors.DestinationListValIsNotPtrErr
+		return customerrors.ErrDestinationListValIsNotPtr
 	}
 
 	srcListElemVal := srcListVal.Elem()
 	if srcListElemVal.Kind() != reflect.Slice {
-		return customerrors.SourceListValIsNotSliceErr
+		return customerrors.ErrSourceListValIsNotSlice
 	}
 	destListElemVal := destListVal.Elem()
 	if destListElemVal.Kind() != reflect.Slice {
-		return customerrors.DestinationListValIsNotSliceErr
+		return customerrors.ErrDestinationListValIsNotSlice
 	}
 
 	targetLength := destListElemVal.Len()
 	if srcListElemVal.Len() != targetLength {
-		return customerrors.DifferentLengthOfUnitsErr
+		return customerrors.ErrDifferentLengthOfUnits
 	}
 
 	for i := 0; i < targetLength; i++ {

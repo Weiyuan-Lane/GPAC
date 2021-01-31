@@ -31,7 +31,7 @@ func (p *PageAwareCache) Item(subject interface{}, key string, retrieveWith Retr
 		return err
 	}
 	if p.isNil(payload) {
-		return customerrors.ItemNotFoundErr
+		return customerrors.ErrItemNotFound
 	}
 
 	err = p.copyBetweenPointers(subject, payload)
