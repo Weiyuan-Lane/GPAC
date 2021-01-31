@@ -54,12 +54,12 @@ func testLocalMap() {
 func testLogic(gpacWrapperClient *core.PageAwareCache) {
 	var item TestStruct
 	fmt.Println("Retrieving item")
-	_ = gpacWrapperClient.ItemSimple(&item, func(key string) (interface{}, error) {
+	_ = gpacWrapperClient.SimpleItem(&item, func(key string) (interface{}, error) {
 		fmt.Println("Called")
 		return &TestStruct{"stuff"}, nil
 	}, "stuff")
 	fmt.Println("Retrieved called item as:", item)
-	_ = gpacWrapperClient.ItemSimple(&item, func(key string) (interface{}, error) {
+	_ = gpacWrapperClient.SimpleItem(&item, func(key string) (interface{}, error) {
 		fmt.Println("Called")
 		return &TestStruct{"stuff1"}, nil
 	}, "stuff")
@@ -69,7 +69,7 @@ func testLogic(gpacWrapperClient *core.PageAwareCache) {
 	fmt.Println("Waiting 10 seconds for TTL to lapse")
 	time.Sleep(11 * time.Second)
 	fmt.Println("Retrieving item again")
-	_ = gpacWrapperClient.ItemSimple(&item, func(key string) (interface{}, error) {
+	_ = gpacWrapperClient.SimpleItem(&item, func(key string) (interface{}, error) {
 		fmt.Println("Called")
 		return &TestStruct{"stuff2"}, nil
 	}, "stuff")
