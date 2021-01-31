@@ -1,12 +1,12 @@
 package core
 
-type MultipleRetrievalFunc func(keyList []string) (map[string]interface{}, error)
+type SimpleRetrieveMultipleFunc func(keyList []string) (map[string]interface{}, error)
 
-func (p *PageAwareCache) Items(subjectMap interface{}, keyList []string, retrieveWith MultipleRetrievalFunc) error {
+func (p *PageAwareCache) SimpleItems(subjectMap interface{}, retrieveWith SimpleRetrieveMultipleFunc, keyList []string) error {
 	// Create a list of keys that we want to reference from cache
 	cacheKeyList := make([]string, len(keyList))
 	for i, key := range keyList {
-		cacheKeyList[i] = p.createItemFullCacheKey(key)
+		cacheKeyList[i] = p.createItemCacheKeyFromStrKey(key)
 	}
 
 	// Hit cache to get results
@@ -62,7 +62,7 @@ func (p *PageAwareCache) Items(subjectMap interface{}, keyList []string, retriev
 	}
 	cacheInputMap := map[string]string{}
 	for key, val := range encodedMap {
-		cacheKey := p.createItemFullCacheKey(key)
+		cacheKey := p.createItemCacheKeyFromStrKey(key)
 		cacheInputMap[cacheKey] = val
 	}
 
