@@ -4,7 +4,7 @@ type PageRetrievalFunc func(keyArgs ...ArgReference) (interface{}, error)
 type ItemToKeyFunc func(subject interface{}) (string, error)
 type PageToItemsFunc func(pageSubject interface{}) ([]interface{}, error)
 
-func (p *PageAwareCache) Page(
+func (p *pageAwareCache) Page(
 	pageSubject interface{},
 	retrieveWith PageRetrievalFunc,
 	retrieveItemsFrom PageToItemsFunc,
@@ -56,7 +56,7 @@ func (p *PageAwareCache) Page(
 	return nil
 }
 
-func (p *PageAwareCache) cachePageItems(
+func (p *pageAwareCache) cachePageItems(
 	pagePayload interface{},
 	retrieveItemsFrom PageToItemsFunc,
 	retrieveKeyFrom ItemToKeyFunc,

@@ -13,11 +13,11 @@ import (
 
 // Using the unique namespace and the item key, create a key unique
 // to this target resource
-func (p *PageAwareCache) createItemCacheKeyFromStrKey(itemKey string) string {
+func (p *pageAwareCache) createItemCacheKeyFromStrKey(itemKey string) string {
 	return fmt.Sprintf(constants.SimpleItemKeyTemplate, p.uniqueNamespace, itemKey)
 }
 
-func (p *PageAwareCache) createItemCacheKeyFromSubKeys(subKeys ...ArgReference) string {
+func (p *pageAwareCache) createItemCacheKeyFromSubKeys(subKeys ...ArgReference) string {
 	return p.createCacheKeyFromSubKeysAndTemplate(
 		constants.ItemKeyTemplate,
 		subKeys...,
@@ -26,18 +26,18 @@ func (p *PageAwareCache) createItemCacheKeyFromSubKeys(subKeys ...ArgReference) 
 
 // Using the unique namespace and the page key, create a key unique
 // to this target resource page
-func (p *PageAwareCache) createPageCacheKeyFromStrKey(pageKey string) string {
+func (p *pageAwareCache) createPageCacheKeyFromStrKey(pageKey string) string {
 	return fmt.Sprintf(constants.SimplePageKeyTemplate, p.uniqueNamespace, pageKey)
 }
 
-func (p *PageAwareCache) createPageCacheKeyFromSubKeys(subKeys ...ArgReference) string {
+func (p *pageAwareCache) createPageCacheKeyFromSubKeys(subKeys ...ArgReference) string {
 	return p.createCacheKeyFromSubKeysAndTemplate(
 		constants.PageKeyTemplate,
 		subKeys...,
 	)
 }
 
-func (p *PageAwareCache) createCacheKeyFromSubKeysAndTemplate(template string, subKeys ...ArgReference) string {
+func (p *pageAwareCache) createCacheKeyFromSubKeysAndTemplate(template string, subKeys ...ArgReference) string {
 	cacheSubKeys := make([]string, len(subKeys))
 	cacheSubNamespaces := make([]string, len(subKeys))
 	for i, subKey := range subKeys {
@@ -56,15 +56,15 @@ func (p *PageAwareCache) createCacheKeyFromSubKeysAndTemplate(template string, s
 	)
 }
 
-func (p *PageAwareCache) isPointer(kind interface{}) bool {
+func (p *pageAwareCache) isPointer(kind interface{}) bool {
 	return reflect.ValueOf(kind).Kind() == reflect.Ptr
 }
 
-func (p *PageAwareCache) isNil(kind interface{}) bool {
+func (p *pageAwareCache) isNil(kind interface{}) bool {
 	return reflect.ValueOf(kind).IsNil()
 }
 
-func (p *PageAwareCache) decodeStringIntoInterfacePtr(subject interface{}, str string) error {
+func (p *pageAwareCache) decodeStringIntoInterfacePtr(subject interface{}, str string) error {
 	buf := bytes.NewBufferString(str)
 	if err := gob.NewDecoder(buf).Decode(subject); err != nil {
 		return err
@@ -73,7 +73,7 @@ func (p *PageAwareCache) decodeStringIntoInterfacePtr(subject interface{}, str s
 	return nil
 }
 
-func (p *PageAwareCache) encodeInterfacePtrIntoString(subject interface{}) (string, error) {
+func (p *pageAwareCache) encodeInterfacePtrIntoString(subject interface{}) (string, error) {
 	buf := &bytes.Buffer{}
 	err := gob.NewEncoder(buf).Encode(subject)
 	if err != nil {
@@ -83,7 +83,7 @@ func (p *PageAwareCache) encodeInterfacePtrIntoString(subject interface{}) (stri
 	return buf.String(), nil
 }
 
-func (p *PageAwareCache) decodeMapIntoMapPtr(subject interface{}, strMap map[int]string) error {
+func (p *pageAwareCache) decodeMapIntoMapPtr(subject interface{}, strMap map[int]string) error {
 	if err := p.validateMapPointer(subject); err != nil {
 		return err
 	}
@@ -110,7 +110,7 @@ func (p *PageAwareCache) decodeMapIntoMapPtr(subject interface{}, strMap map[int
 	return nil
 }
 
-func (p *PageAwareCache) encodeMapPtrIntoMap(subject interface{}) (map[int]string, error) {
+func (p *pageAwareCache) encodeMapPtrIntoMap(subject interface{}) (map[int]string, error) {
 	if err := p.validateMapPointer(subject); err != nil {
 		return nil, err
 	}
@@ -140,7 +140,7 @@ func (p *PageAwareCache) encodeMapPtrIntoMap(subject interface{}) (map[int]strin
 	return result, nil
 }
 
-func (p *PageAwareCache) copyBetweenPointers(src, dest interface{}) error {
+func (p *pageAwareCache) copyBetweenPointers(src, dest interface{}) error {
 	if src == nil {
 		return customerrors.ErrSourceValIsNil
 	}
@@ -164,7 +164,7 @@ func (p *PageAwareCache) copyBetweenPointers(src, dest interface{}) error {
 	return nil
 }
 
-func (p *PageAwareCache) copyBetweenPointerMaps(srcMapPtr, destMapPtr interface{}) error {
+func (p *pageAwareCache) copyBetweenPointerMaps(srcMapPtr, destMapPtr interface{}) error {
 	if srcMapPtr == nil {
 		return customerrors.ErrSourceMapValIsNil
 	}
@@ -214,7 +214,7 @@ func (p *PageAwareCache) copyBetweenPointerMaps(srcMapPtr, destMapPtr interface{
 	return nil
 }
 
-func (p *PageAwareCache) copyBetweenPointerLists(srcListPtr, destListPtr interface{}) error {
+func (p *pageAwareCache) copyBetweenPointerLists(srcListPtr, destListPtr interface{}) error {
 	if srcListPtr == nil {
 		return customerrors.ErrSourceListValIsNil
 	}
@@ -255,7 +255,7 @@ func (p *PageAwareCache) copyBetweenPointerLists(srcListPtr, destListPtr interfa
 	return nil
 }
 
-func (p *PageAwareCache) validateMapPointer(mapPtr interface{}) error {
+func (p *pageAwareCache) validateMapPointer(mapPtr interface{}) error {
 	if mapPtr == nil {
 		return customerrors.ErrSourceMapValIsNil
 	}
@@ -278,7 +278,7 @@ func (p *PageAwareCache) validateMapPointer(mapPtr interface{}) error {
 	return nil
 }
 
-func (p *PageAwareCache) makePointerTo(subject interface{}) interface{} {
+func (p *pageAwareCache) makePointerTo(subject interface{}) interface{} {
 	subjectPtr := reflect.New(reflect.TypeOf(subject))
 	reflect.Indirect(subjectPtr).Set(reflect.ValueOf(subject))
 
