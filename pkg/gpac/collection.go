@@ -2,7 +2,7 @@ package gpac
 
 type SimpleRetrieveMultipleFunc func(keyList []string) (interface{}, error)
 
-func (p *PageAwareCache) Items(subjectMap interface{}, retrieveWith SimpleRetrieveMultipleFunc, keyList []string) error {
+func (p *pageAwareCache) Items(subjectMap interface{}, retrieveWith SimpleRetrieveMultipleFunc, keyList []string) error {
 	// Create a list of keys that we want to reference from cache
 	cacheKeyList := make([]string, len(keyList))
 	keyIndexMap := map[string]int{}
