@@ -7,7 +7,7 @@ import (
 type SimpleRetrieveFunc func(key string) (interface{}, error)
 type RetrieveFunc func(subKeys ...ArgReference) (interface{}, error)
 
-func (p *PageAwareCache) SimpleItem(subject interface{}, retrieveWith SimpleRetrieveFunc, key string) error {
+func (p *pageAwareCache) SimpleItem(subject interface{}, retrieveWith SimpleRetrieveFunc, key string) error {
 	itemCacheKey := p.createItemCacheKeyFromStrKey(key)
 
 	cachePayload, err := p.cacheClient.Get(itemCacheKey)
@@ -49,7 +49,7 @@ func (p *PageAwareCache) SimpleItem(subject interface{}, retrieveWith SimpleRetr
 	return nil
 }
 
-func (p *PageAwareCache) Item(subject interface{}, retrieveWith RetrieveFunc, subKeys ...ArgReference) error {
+func (p *pageAwareCache) Item(subject interface{}, retrieveWith RetrieveFunc, subKeys ...ArgReference) error {
 	itemCacheKey := p.createItemCacheKeyFromSubKeys(subKeys...)
 
 	cachePayload, err := p.cacheClient.Get(itemCacheKey)

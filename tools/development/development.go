@@ -41,9 +41,9 @@ func testRedis() {
 		gpac.WithUniqueNamespace("testingnamespace"),
 	)
 
-	// testSimpleItem(gpacWrapperClient)
-	// testItem(gpacWrapperClient)
-	// testCollection(gpacWrapperClient)
+	testSimpleItem(gpacWrapperClient)
+	testItem(gpacWrapperClient)
+	testCollection(gpacWrapperClient)
 	testPage(gpacWrapperClient)
 }
 
@@ -60,7 +60,7 @@ func testLocalMap() {
 	testSimpleItem(gpacWrapperClient)
 }
 
-func testSimpleItem(gpacWrapperClient *gpac.PageAwareCache) {
+func testSimpleItem(gpacWrapperClient gpac.PageAwareCache) {
 	var item TestStruct
 	fmt.Println("Retrieving item")
 	_ = gpacWrapperClient.SimpleItem(&item, func(key string) (interface{}, error) {
@@ -85,7 +85,7 @@ func testSimpleItem(gpacWrapperClient *gpac.PageAwareCache) {
 	fmt.Println("Retrieved called item as:", item)
 }
 
-func testItem(gpacWrapperClient *gpac.PageAwareCache) {
+func testItem(gpacWrapperClient gpac.PageAwareCache) {
 	var item TestStruct
 
 	fmt.Println("Retrieving item")
@@ -132,7 +132,7 @@ func testItem(gpacWrapperClient *gpac.PageAwareCache) {
 	fmt.Println("Retrieved called item as:", item)
 }
 
-func testCollection(gpacWrapperClient *gpac.PageAwareCache) {
+func testCollection(gpacWrapperClient gpac.PageAwareCache) {
 	itemMap := map[int]TestStruct{}
 	fmt.Println("Retrieving collection")
 
@@ -167,7 +167,7 @@ func testCollection(gpacWrapperClient *gpac.PageAwareCache) {
 	fmt.Println("Retrieved called item as:", itemMap, err)
 }
 
-func testPage(gpacWrapperClient *gpac.PageAwareCache) {
+func testPage(gpacWrapperClient gpac.PageAwareCache) {
 	page := TestStructPage{}
 	retrieveItemsFrom := func(pageSubject interface{}) ([]interface{}, error) {
 		pagePtr := pageSubject.(*TestStructPage)
