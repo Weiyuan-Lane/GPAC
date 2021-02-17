@@ -1,4 +1,4 @@
-package core
+package gpac
 
 import (
 	"bytes"
@@ -83,7 +83,7 @@ func (p *PageAwareCache) encodeInterfacePtrIntoString(subject interface{}) (stri
 	return buf.String(), nil
 }
 
-func (p *PageAwareCache) decodeMapIntoMapPtr(subject interface{}, strMap map[string]string) error {
+func (p *PageAwareCache) decodeMapIntoMapPtr(subject interface{}, strMap map[int]string) error {
 	if err := p.validateMapPointer(subject); err != nil {
 		return err
 	}
@@ -92,8 +92,8 @@ func (p *PageAwareCache) decodeMapIntoMapPtr(subject interface{}, strMap map[str
 	mapElem := mapVal.Elem()
 	mapType := mapElem.Type()
 
-	placeholder := reflect.New(mapType.Elem())
-	placeholderPtr := placeholder.Addr()
+	placeholderPtr := reflect.New(mapType.Elem())
+	placeholder := reflect.Indirect(placeholderPtr)
 
 	for k, v := range strMap {
 		buf := bytes.NewBufferString(v)
@@ -110,7 +110,7 @@ func (p *PageAwareCache) decodeMapIntoMapPtr(subject interface{}, strMap map[str
 	return nil
 }
 
-func (p *PageAwareCache) encodeMapPtrIntoMap(subject interface{}) (map[string]string, error) {
+func (p *PageAwareCache) encodeMapPtrIntoMap(subject interface{}) (map[int]string, error) {
 	if err := p.validateMapPointer(subject); err != nil {
 		return nil, err
 	}
@@ -119,13 +119,13 @@ func (p *PageAwareCache) encodeMapPtrIntoMap(subject interface{}) (map[string]st
 	mapElem := mapVal.Elem()
 	mapType := mapElem.Type()
 
-	placeholder := reflect.New(mapType.Elem())
-	placeholderPtr := placeholder.Addr()
+	placeholderPtr := reflect.New(mapType.Elem())
+	placeholder := reflect.Indirect(placeholderPtr)
 
-	result := map[string]string{}
+	result := map[int]string{}
 	iter := mapElem.MapRange()
 	for iter.Next() {
-		key := iter.Key().Interface().(string)
+		key := iter.Key().Interface().(int)
 		placeholder.Set(iter.Value())
 
 		buf := &bytes.Buffer{}
@@ -191,12 +191,12 @@ func (p *PageAwareCache) copyBetweenPointerMaps(srcMapPtr, destMapPtr interface{
 	}
 
 	srcMapType := srcMapElem.Type()
-	if srcMapType.Key().Kind() != reflect.String {
-		return customerrors.ErrSourceMapKeyIsNotString
+	if srcMapType.Key().Kind() != reflect.Int {
+		return customerrors.ErrSourceMapKeyIsNotInt
 	}
 	destMapType := srcMapElem.Type()
-	if destMapType.Key().Kind() != reflect.String {
-		return customerrors.ErrDestinationMapKeyIsNotString
+	if destMapType.Key().Kind() != reflect.Int {
+		return customerrors.ErrDestinationMapKeyIsNotInt
 	}
 
 	if srcMapType.Elem() != destMapType.Elem() {
@@ -271,9 +271,16 @@ func (p *PageAwareCache) validateMapPointer(mapPtr interface{}) error {
 	}
 
 	mapType := mapElem.Type()
-	if mapType.Key().Kind() != reflect.String {
-		return customerrors.ErrSourceMapKeyIsNotString
+	if mapType.Key().Kind() != reflect.Int {
+		return customerrors.ErrSourceMapKeyIsNotInt
 	}
 
 	return nil
+}
+
+func (p *PageAwareCache) makePointerTo(subject interface{}) interface{} {
+	subjectPtr := reflect.New(reflect.TypeOf(subject))
+	reflect.Indirect(subjectPtr).Set(reflect.ValueOf(subject))
+
+	return subjectPtr.Interface()
 }

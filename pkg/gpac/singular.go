@@ -1,4 +1,4 @@
-package core
+package gpac
 
 import (
 	customerrors "github.com/weiyuan-lane/gpac/pkg/errors"
@@ -31,7 +31,7 @@ func (p *PageAwareCache) SimpleItem(subject interface{}, retrieveWith SimpleRetr
 		return customerrors.ErrItemNotFound
 	}
 
-	err = p.copyBetweenPointers(subject, payload)
+	err = p.copyBetweenPointers(payload, subject)
 	if err != nil {
 		return err
 	}
@@ -73,7 +73,7 @@ func (p *PageAwareCache) Item(subject interface{}, retrieveWith RetrieveFunc, su
 		return customerrors.ErrItemNotFound
 	}
 
-	err = p.copyBetweenPointers(subject, payload)
+	err = p.copyBetweenPointers(payload, subject)
 	if err != nil {
 		return err
 	}

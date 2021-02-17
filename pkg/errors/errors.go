@@ -25,8 +25,8 @@ var (
 	ErrDestinationMapValIsNotPtr       = errors.New("GPAC: destination map value is not a pointer")
 	ErrSourceMapValIsNotMap            = errors.New("GPAC: source map value is not a map")
 	ErrDestinationMapValIsNotMap       = errors.New("GPAC: destination map value is not a map")
-	ErrSourceMapKeyIsNotString         = errors.New("GPAC: source map key is not a string")
-	ErrDestinationMapKeyIsNotString    = errors.New("GPAC: destination map key is not a string")
+	ErrSourceMapKeyIsNotInt            = errors.New("GPAC: source map key is not a int")
+	ErrDestinationMapKeyIsNotInt       = errors.New("GPAC: destination map key is not a int")
 	ErrSourceDestinationMapValMismatch = errors.New("GPAC: source map val type does not equate to destination map val type")
 
 	ErrDifferentLengthOfUnits = errors.New("GPAC: source and destination slices do not correspond to the same length")

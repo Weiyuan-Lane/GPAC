@@ -1,11 +1,13 @@
-package core
+package gpac
 
-type SimpleRetrieveMultipleFunc func(keyList []string) (map[string]interface{}, error)
+type SimpleRetrieveMultipleFunc func(keyList []string) (interface{}, error)
 
-func (p *PageAwareCache) SimpleItems(subjectMap interface{}, retrieveWith SimpleRetrieveMultipleFunc, keyList []string) error {
+func (p *PageAwareCache) Items(subjectMap interface{}, retrieveWith SimpleRetrieveMultipleFunc, keyList []string) error {
 	// Create a list of keys that we want to reference from cache
 	cacheKeyList := make([]string, len(keyList))
+	keyIndexMap := map[string]int{}
 	for i, key := range keyList {
+		keyIndexMap[key] = i
 		cacheKeyList[i] = p.createItemCacheKeyFromStrKey(key)
 	}
 
@@ -16,13 +18,14 @@ func (p *PageAwareCache) SimpleItems(subjectMap interface{}, retrieveWith Simple
 	}
 
 	// Divide the results into those found and those not found
-	cacheOriginalKeyMap := map[string]string{}
+	cacheOriginalKeyMap := map[int]string{}
 	missingKeys := make([]string, 0, len(cacheKeyList))
 	for i, cacheKey := range cacheKeyList {
 		originalKey := keyList[i]
 
 		if val, ok := cachePayloadMap[cacheKey]; ok {
-			cacheOriginalKeyMap[originalKey] = val
+			index := keyIndexMap[originalKey]
+			cacheOriginalKeyMap[index] = val
 			continue
 		}
 
@@ -49,21 +52,23 @@ func (p *PageAwareCache) SimpleItems(subjectMap interface{}, retrieveWith Simple
 		return err
 	}
 
+	payloadPtr := p.makePointerTo(payload)
+
 	// Move results into subject map
-	err = p.copyBetweenPointerMaps(subjectMap, &payload)
+	err = p.copyBetweenPointerMaps(payloadPtr, subjectMap)
 	if err != nil {
 		return err
 	}
 
 	// Convert retrieved payload to a cacheable payload
-	encodedMap, err := p.encodeMapPtrIntoMap(&payload)
+	encodedMap, err := p.encodeMapPtrIntoMap(payloadPtr)
 	if err != nil {
 		return err
 	}
 	cacheInputMap := map[string]string{}
-	for key, val := range encodedMap {
-		cacheKey := p.createItemCacheKeyFromStrKey(key)
-		cacheInputMap[cacheKey] = val
+	for i, val := range encodedMap {
+		key := cacheKeyList[i]
+		cacheInputMap[key] = val
 	}
 
 	// Set all items to cache

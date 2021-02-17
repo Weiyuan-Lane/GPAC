@@ -1,4 +1,4 @@
-package core
+package gpac
 
 import (
 	"github.com/weiyuan-lane/gpac/pkg/caches"
