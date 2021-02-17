@@ -3,6 +3,7 @@ package gpacmock
 import (
 	"reflect"
 
+	customerrors "github.com/weiyuan-lane/gpac/pkg/errors"
 	"github.com/weiyuan-lane/gpac/pkg/gpac"
 )
 
@@ -18,6 +19,10 @@ func (g *GPACMock) SimpleItem(subject interface{}, retrieveWith gpac.SimpleRetri
 		return err
 	}
 
+	if reflect.ValueOf(val).IsNil() {
+		return customerrors.ErrItemNotFound
+	}
+
 	g.copyBetweenPointers(val, subject)
 	return nil
 }
@@ -26,6 +31,10 @@ func (g *GPACMock) Item(subject interface{}, retrieveWith gpac.RetrieveFunc, sub
 	val, err := retrieveWith(subKeys...)
 	if err != nil {
 		return err
+	}
+
+	if reflect.ValueOf(val).IsNil() {
+		return customerrors.ErrItemNotFound
 	}
 
 	g.copyBetweenPointers(val, subject)
@@ -49,6 +58,10 @@ func (g *GPACMock) Page(pageSubject interface{}, retrieveWith gpac.PageRetrieval
 	val, err := retrieveWith(subKeys...)
 	if err != nil {
 		return err
+	}
+
+	if reflect.ValueOf(val).IsNil() {
+		return customerrors.ErrItemNotFound
 	}
 
 	g.copyBetweenPointers(val, pageSubject)
