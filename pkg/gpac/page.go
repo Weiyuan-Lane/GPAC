@@ -1,9 +1,5 @@
 package gpac
 
-import (
-	"reflect"
-)
-
 type PageRetrievalFunc func(keyArgs ...ArgReference) (interface{}, error)
 type ItemToKeyFunc func(subject interface{}) (string, error)
 type PageToItemsFunc func(pageSubject interface{}) ([]interface{}, error)
@@ -37,7 +33,7 @@ func (p *PageAwareCache) Page(
 		return err
 	}
 
-	err = p.copyBetweenPointers(&pagePayload, pageSubject)
+	err = p.copyBetweenPointers(pagePayload, pageSubject)
 	if err != nil {
 		return err
 	}
@@ -52,12 +48,7 @@ func (p *PageAwareCache) Page(
 		return err
 	}
 
-	items, err := retrieveItemsFrom(pagePayload)
-	if err != nil {
-		return err
-	}
-
-	err = p.cachePageItems(items, retrieveItemsFrom, retrieveKeyFrom)
+	err = p.cachePageItems(pagePayload, retrieveItemsFrom, retrieveKeyFrom)
 	if err != nil {
 		return err
 	}
@@ -70,7 +61,6 @@ func (p *PageAwareCache) cachePageItems(
 	retrieveItemsFrom PageToItemsFunc,
 	retrieveKeyFrom ItemToKeyFunc,
 ) error {
-
 	items, err := retrieveItemsFrom(pagePayload)
 	if err != nil {
 		return err
@@ -84,7 +74,7 @@ func (p *PageAwareCache) cachePageItems(
 		}
 
 		cacheKey := p.createItemCacheKeyFromStrKey(key)
-		cacheItemPtr := reflect.ValueOf(items[i]).Addr().Interface()
+		cacheItemPtr := p.makePointerTo(items[i])
 		cacheVal, err := p.encodeInterfacePtrIntoString(cacheItemPtr)
 		if err != nil {
 			return err
