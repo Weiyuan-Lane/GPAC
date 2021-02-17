@@ -1,5 +1,7 @@
 package gpac
 
+import customerrors "github.com/weiyuan-lane/gpac/pkg/errors"
+
 type PageRetrievalFunc func(keyArgs ...ArgReference) (interface{}, error)
 type ItemToKeyFunc func(subject interface{}) (string, error)
 type PageToItemsFunc func(pageSubject interface{}) ([]interface{}, error)
@@ -31,6 +33,9 @@ func (p *pageAwareCache) Page(
 	pagePayload, err := retrieveWith(subKeys...)
 	if err != nil {
 		return err
+	}
+	if p.isNil(pagePayload) {
+		return customerrors.ErrItemNotFound
 	}
 
 	err = p.copyBetweenPointers(pagePayload, pageSubject)
