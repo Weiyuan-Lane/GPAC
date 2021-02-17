@@ -1,9 +1,7 @@
-package core
+package gpac
 
 import (
 	"reflect"
-
-	customerrors "github.com/weiyuan-lane/gpac/pkg/errors"
 )
 
 type PageRetrievalFunc func(keyArgs ...ArgReference) (interface{}, error)
@@ -38,11 +36,8 @@ func (p *PageAwareCache) Page(
 	if err != nil {
 		return err
 	}
-	if p.isNil(pagePayload) {
-		return customerrors.ErrItemNotFound
-	}
 
-	err = p.copyBetweenPointers(pageSubject, pagePayload)
+	err = p.copyBetweenPointers(&pagePayload, pageSubject)
 	if err != nil {
 		return err
 	}
